@@ -6,12 +6,9 @@ git:
     quiet: true
     submodules: false
 
-services:
-    - mongodb
-
 if: tag IS blank
 
-script: npm audit && npm run test && npm run lint && npm run check-format && npm run build
+script: npm audit && npm run lint && npm run check-format && npm run build
 
 jobs:
     include:
