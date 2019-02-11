@@ -1,0 +1,32 @@
+{
+    "name": "node-server-utils",
+    "version": "0.0.0-development",
+    "description": "Node Server Utils",
+    "author": "James Talton",
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/jamestalton/node-server-utils.git"
+    },
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "scripts": {
+        "build": "rm -rf lib && tsc",
+        "test": "rm -rf coverage && jest",
+        "start": "LOG_LEVEL=SILLY PORT=3000 ts-node example/main.ts",
+        "lint": "tslint -p . && tslint -p test -c test/tslint.json",
+        "lint-fix": "tslint -p . --fix && tslint -p test -c test/tslint.json --fix",
+        "check-format": "prettier --list-different **/*.ts **/*.json **/*.md !coverage/** !lib/** !**/package-lock.json",
+        "format": "prettier --write **/*.ts **/*.json **/*.md !coverage/** !lib/** !**/package-lock.json",
+        "clean": "rm -rf package-lock.json node_modules lib coverage",
+        "update": "npm run clean && ncu -a && npm install && npm test"
+    },
+    "devDependencies": {
+        "@types/node": "^10.12.23",
+        "prettier": "^1.16.4",
+        "ts-node": "^8.0.2",
+        "tslint": "^5.12.1",
+        "tslint-config-prettier": "^1.18.0",
+        "typescript": "^3.3.3"
+    }
+}

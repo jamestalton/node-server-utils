@@ -1,0 +1,10 @@
+example
+src
+.gitignore
+.npmignore
+.travis.yml
+.npmrc
+jest.config.js
+prettier.config.js
+tsconfig.json
+tslint.json
