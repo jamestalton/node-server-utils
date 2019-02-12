@@ -33,6 +33,14 @@ export function initializeProcess(shutdownCallback: () => Promise<any>, logger: 
         void shutdown()
     })
 
+    process.on('beforeExit', code => {
+        if (code !== 0) {
+            logger.error({ message: `${processName} exiting`, code })
+        } else {
+            logInfo({ message: `${processName} exiting`, code })
+        }
+    })
+
     process.on('exit', code => {
         if (code !== 0) {
             logger.error({ message: `${processName} exit`, code })
