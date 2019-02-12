@@ -123,25 +123,25 @@ export interface ILogger {
 
 export let logger: ILogger = {
     silly: (logObject: ILogObject) => {
-        if (logSilly) {
+        if (logSilly && activeLogger != undefined) {
             ;(logObject as any).level = LogLevel.Silly
             activeLogger.silly(logObject)
         }
     },
     debug: (logObject: ILogObject) => {
-        if (logDebug) {
+        if (logDebug && activeLogger != undefined) {
             ;(logObject as any).level = LogLevel.Debug
             activeLogger.debug(logObject)
         }
     },
     info: (logObject: ILogObject) => {
-        if (logInfo) {
+        if (logInfo && activeLogger != undefined) {
             ;(logObject as any).level = LogLevel.Info
             activeLogger.info(logObject)
         }
     },
     warn: (logObject: ILogObject) => {
-        if (logWarn) {
+        if (logWarn && activeLogger != undefined) {
             ;(logObject as any).level = LogLevel.Warn
             activeLogger.warn(logObject)
         }
