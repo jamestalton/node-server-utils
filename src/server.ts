@@ -72,10 +72,5 @@ export async function shutdownAppServer(server: Server | Http2SecureServer) {
         })
 
         await new Promise(resolveClose => server.close(resolveClose))
-        ;(server as any).clientSockets.forEach((clientSocket: Socket) => {
-            if ((clientSocket as any).activeRequestCount === 0) {
-                clientSocket.destroy()
-            }
-        })
     })
 }
