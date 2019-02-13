@@ -28,9 +28,9 @@ export function startCluster(startApp: () => Promise<any>, shutdownApp: () => Pr
 
         cluster.on('exit', (deadWorker, code, signal) => {
             if (!deadWorker.exitedAfterDisconnect) {
-                logger.error({ message: `cluster worker crash`, code, signal })
+                logger.error({ message: `cluster worker crash`, code })
             } else {
-                logger.silly({ message: `cluster worker exit`, disconnect: true, code, signal })
+                logger.silly({ message: `cluster worker exit`, code })
             }
         })
 
