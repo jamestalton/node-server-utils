@@ -15,9 +15,7 @@ export function startCluster(startApp: () => Promise<any>, shutdownApp: () => Pr
 
     if (cluster.isMaster) {
         initializeProcess(async () => {
-            logger.silly({ message: 'master shutting down' })
             cluster.disconnect()
-            logger.silly({ message: 'master shutdown' })
         }, logger)
 
         let workerCount = os.cpus().length

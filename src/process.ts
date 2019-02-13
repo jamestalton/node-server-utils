@@ -5,23 +5,34 @@ import { ILogger } from './logger'
 const processName = isMaster ? 'process' : 'worker process'
 
 export function initializeProcess(shutdownCallback: () => Promise<any>, logger: ILogger) {
+    let exiting = false
     const shutdown = async () => {
+        if (exiting) {
+            return
+        }
+        exiting = true
         setTimeout(() => {
             logger.error({ message: 'shutdown timeout' })
             process.exit(1)
-        }, 10 * 1000).unref()
+        }, 20 * 1000).unref()
 
         await shutdownCallback()
     }
 
     const logInfo = isMaster ? logger.info : logger.silly
 
-    logInfo({
-        message: `${processName} start`,
-        env: process.env.NODE_ENV,
-        cpus: Object.keys(cpus()).length,
-        mem: (totalmem() / (1024 * 1024 * 1024)).toString() + 'GB'
-    })
+    if (isMaster) {
+        logInfo({
+            message: `${processName} start`,
+            env: process.env.NODE_ENV,
+            cpus: Object.keys(cpus()).length,
+            mem: (totalmem() / (1024 * 1024 * 1024)).toString() + 'GB'
+        })
+    } else {
+        logInfo({
+            message: `${processName} start`
+        })
+    }
 
     process.on('uncaughtException', err => {
         logger.error({
@@ -33,14 +44,6 @@ export function initializeProcess(shutdownCallback: () => Promise<any>, logger: 
         void shutdown()
     })
 
-    process.on('beforeExit', code => {
-        if (code !== 0) {
-            logger.error({ message: `${processName} exiting`, code })
-        } else {
-            logInfo({ message: `${processName} exiting`, code })
-        }
-    })
-
     process.on('exit', code => {
         if (code !== 0) {
             logger.error({ message: `${processName} exit`, code })
@@ -50,11 +53,17 @@ export function initializeProcess(shutdownCallback: () => Promise<any>, logger: 
     })
 
     process.on('SIGTERM', async () => {
+        if (exiting) {
+            return
+        }
         logInfo({ message: `${processName} SIGTERM` })
         await shutdown()
     })
 
     process.on('SIGINT', async () => {
+        if (exiting) {
+            return
+        }
         logInfo({ message: `${processName} SIGINT` })
         await shutdown()
     })

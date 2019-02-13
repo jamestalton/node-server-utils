@@ -20,10 +20,8 @@ export function createAppServer(
             } else {
                 req.socket.activeRequestCount++
             }
-            logger.silly({ message: `client socket active requests`, count: req.socket.activeRequestCount })
             res.on('finish', function() {
                 req.socket.activeRequestCount--
-                logger.silly({ message: `client socket active requests`, count: req.socket.activeRequestCount })
                 if ((server as any).allSocketsClosedCallback != undefined && req.socket.activeRequestCount === 0) {
                     ;(req.socket as Socket).destroy()
                 }
@@ -31,8 +29,7 @@ export function createAppServer(
         })
         .on('connection', socket => {
             clientSockets.push(socket)
-            logger.silly({ message: `client socket connect` })
-            logger.silly({ message: `client sockets`, count: clientSockets.length })
+            logger.silly({ message: `client socket connect`, sockets: clientSockets.length })
             socket
                 .on('error', function(err: Error) {
                     logger.error({
@@ -43,8 +40,7 @@ export function createAppServer(
                 })
                 .on('close', function() {
                     clientSockets.splice(clientSockets.indexOf(socket), 1)
-                    logger.silly({ message: `client socket closed` })
-                    logger.silly({ message: `client sockets`, count: clientSockets.length })
+                    logger.silly({ message: `client socket closed`, sockets: clientSockets.length })
                     if ((server as any).allSocketsClosedCallback != undefined && clientSockets.length === 0) {
                         ;(server as any).allSocketsClosedCallback()
                     }
@@ -66,14 +62,20 @@ export async function shutdownAppServer(server: Server | Http2SecureServer) {
         return
     }
 
-    logger.silly({ message: 'server closing' })
-    await new Promise(resolve => server.close(resolve))
-
-    if ((server as any).clientSockets.length !== 0) {
-        logger.debug({ message: 'closing client sockets', count: (server as any).clientSockets.length })
-        await new Promise(resolve => {
-            ;(server as any).allSocketsClosedCallback = resolve
+    logger.silly({ message: 'closing client sockets', sockets: (server as any).clientSockets.length })
+    await new Promise(async resolve => {
+        ;(server as any).allSocketsClosedCallback = resolve
+        ;(server as any).clientSockets.forEach((clientSocket: Socket) => {
+            if ((clientSocket as any).activeRequestCount === 0) {
+                clientSocket.destroy()
+            }
         })
-        logger.info({ message: 'client sockets closed' })
-    }
+
+        await new Promise(resolveClose => server.close(resolveClose))
+        ;(server as any).clientSockets.forEach((clientSocket: Socket) => {
+            if ((clientSocket as any).activeRequestCount === 0) {
+                clientSocket.destroy()
+            }
+        })
+    })
 }

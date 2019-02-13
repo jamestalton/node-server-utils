@@ -12,7 +12,7 @@
     "types": "lib/index.d.ts",
     "scripts": {
         "build": "rm -rf lib && tsc",
-        "start": "LOG_LEVEL=SILLY PORT=3000 ts-node example/main.ts",
+        "start": "LOG_LEVEL=SILLY PORT=3000 MAX_WORKERS=2 ts-node example/main.ts",
         "lint": "tslint -p .",
         "lint-fix": "tslint -p . --fix",
         "check-format": "prettier --list-different **/*.ts **/*.json **/*.md !coverage/** !lib/** !**/package-lock.json",
