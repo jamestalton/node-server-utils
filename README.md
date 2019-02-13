@@ -4,6 +4,10 @@
 
 [![Build Status](https://travis-ci.com/jamestalton/node-server-utils.svg?branch=master)](https://travis-ci.com/jamestalton/node-server-utils)
 
+Utility functions for creating node server. Handles tracking open sockets and properly shutting down sockets when shutting down the server.
+
+Cluster support for running a clustered server. See the node cluster module.
+
 ## Example Typescript
 
 ```typescript
@@ -31,3 +35,7 @@ async function main() {
 
 void main()
 ```
+
+## Logger
+
+The logger is setup to push log messages from the cluster workers to the master thread for logging. Register a logger for logging by either passing it into startCluster() or setLogger().
