@@ -64,16 +64,17 @@ export async function shutdownAppServer(server: Server | Http2SecureServer) {
 
     logger.silly({ message: 'closing client sockets', sockets: (server as any).clientSockets.length })
     await new Promise(async resolve => {
+        ;(server as any).allSocketsClosedCallback = resolve
+        ;(server as any).clientSockets.forEach((clientSocket: Socket) => {
+            if ((clientSocket as any).activeRequestCount === 0) {
+                clientSocket.destroy()
+            }
+        })
+
+        await new Promise(resolveClose => server.close(resolveClose))
+
         if ((server as any).clientSockets.length === 0) {
             resolve()
-        } else {
-            ;(server as any).allSocketsClosedCallback = resolve
-            ;(server as any).clientSockets.forEach((clientSocket: Socket) => {
-                if ((clientSocket as any).activeRequestCount === 0) {
-                    clientSocket.destroy()
-                }
-            })
         }
-        await new Promise(resolveClose => server.close(resolveClose))
     })
 }
