@@ -32,6 +32,9 @@ export function startCluster(startApp: () => Promise<any>, shutdownApp: () => Pr
             } else {
                 logger.silly({ message: `cluster worker exit`, code })
             }
+            if (Object.keys(cluster.workers).length === 0) {
+                cluster.disconnect()
+            }
         })
 
         for (let i = 0; i < workerCount; i += 1) {

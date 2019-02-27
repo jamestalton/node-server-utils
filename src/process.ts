@@ -26,7 +26,8 @@ export function initializeProcess(shutdownCallback: () => Promise<any>, logger: 
             message: `${processName} start`,
             env: process.env.NODE_ENV,
             cpus: Object.keys(cpus()).length,
-            mem: (totalmem() / (1024 * 1024 * 1024)).toString() + 'GB'
+            mem: (totalmem() / (1024 * 1024 * 1024)).toString() + 'GB',
+            node: process.versions.node
         })
     } else {
         logInfo({
