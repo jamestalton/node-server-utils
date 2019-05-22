@@ -6,7 +6,7 @@
 
 Utility functions for creating node server. Handles tracking open sockets and properly shutting down sockets when shutting down the server.
 
-Cluster support for running a clustered server. See the node cluster module.
+-   Cluster support for running a clustered server. See the node cluster module.
 
 ## Example Typescript
 
