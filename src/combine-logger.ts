@@ -1,4 +1,4 @@
-import { ILogger, ILogObject, LogLevel } from './logger'
+import { ILogger, ILogObject } from './logger'
 
 export class CombineLogger implements ILogger {
     public loggers: ILogger[] = []
