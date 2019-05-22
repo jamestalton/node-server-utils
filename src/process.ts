@@ -26,13 +26,12 @@ export function initializeProcess(shutdownCallback: () => Promise<any>, logger: 
             message: `${processName} start`,
             env: process.env.NODE_ENV,
             cpus: Object.keys(cpus()).length,
-            mem: (totalmem() / (1024 * 1024 * 1024)).toString() + 'GB',
-            node: process.versions.node
+            mem: (totalmem() / (1024 * 1024 * 1024)).toPrecision(2).toString() + 'GB',
+            node: process.versions.node,
+            version: process.env.VERSION
         })
     } else {
-        logInfo({
-            message: `${processName} start`
-        })
+        logInfo({ message: `${processName} start`, version: process.env.VERSION })
     }
 
     process.on('uncaughtException', err => {
@@ -40,16 +39,17 @@ export function initializeProcess(shutdownCallback: () => Promise<any>, logger: 
             message: `${processName} uncaughtException`,
             errorName: err.name,
             error: err.message,
-            stack: err.stack
+            stack: err.stack,
+            version: process.env.VERSION
         })
         void shutdown()
     })
 
     process.on('exit', code => {
         if (code !== 0) {
-            logger.error({ message: `${processName} exit`, code })
+            logger.error({ message: `${processName} exit`, code, version: process.env.VERSION })
         } else {
-            logInfo({ message: `${processName} exit`, code })
+            logInfo({ message: `${processName} exit`, code, version: process.env.VERSION })
         }
     })
 
@@ -57,7 +57,7 @@ export function initializeProcess(shutdownCallback: () => Promise<any>, logger: 
         if (exiting) {
             return
         }
-        logInfo({ message: `${processName} SIGTERM` })
+        logInfo({ message: `${processName} SIGTERM`, version: process.env.VERSION })
         await shutdown()
     })
 
@@ -65,33 +65,33 @@ export function initializeProcess(shutdownCallback: () => Promise<any>, logger: 
         if (exiting) {
             return
         }
-        logInfo({ message: `${processName} SIGINT` })
+        logInfo({ message: `${processName} SIGINT`, version: process.env.VERSION })
         await shutdown()
     })
 
     process.on('SIGILL', async () => {
-        logger.error({ message: `${processName} SIGILL` })
+        logger.error({ message: `${processName} SIGILL`, version: process.env.VERSION })
         await shutdown()
     })
 
     process.on('SIGBUS', async () => {
-        logger.error({ message: `${processName} SIGBUS` })
+        logger.error({ message: `${processName} SIGBUS`, version: process.env.VERSION })
         await shutdown()
     })
 
     process.on('SIGFPE', async () => {
-        logger.error({ message: `${processName} SIGFPE` })
+        logger.error({ message: `${processName} SIGFPE`, version: process.env.VERSION })
         await shutdown()
     })
 
     process.on('SIGSEGV', async () => {
-        logger.error({ message: `${processName} SIGSEGV` })
+        logger.error({ message: `${processName} SIGSEGV`, version: process.env.VERSION })
         await shutdown()
     })
 
     if (worker != undefined) {
         worker.on('disconnect', async () => {
-            logger.silly({ message: 'cluster worker disconnect' })
+            logger.silly({ message: 'cluster worker disconnect', version: process.env.VERSION })
             await shutdown()
         })
     }
