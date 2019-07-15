@@ -1,10 +1,10 @@
 export enum LogLevel {
-    None = 'None',
-    Error = 'Error',
-    Warn = 'Warn',
-    Info = 'Info',
-    Debug = 'Debug',
-    Silly = 'Silly'
+    None = 'none',
+    Error = 'error',
+    Warn = 'warn',
+    Info = 'info',
+    Debug = 'debug',
+    Silly = 'silly'
 }
 
 let logLevel: LogLevel = LogLevel.Info
@@ -125,30 +125,45 @@ export let logger: ILogger = {
     silly: (logObject: ILogObject) => {
         if (logSilly && activeLogger != undefined) {
             ;(logObject as any).level = LogLevel.Silly
+            if (logObjectTransform != undefined) {
+                logObject = logObjectTransform(logObject)
+            }
             activeLogger.silly(logObject)
         }
     },
     debug: (logObject: ILogObject) => {
         if (logDebug && activeLogger != undefined) {
             ;(logObject as any).level = LogLevel.Debug
+            if (logObjectTransform != undefined) {
+                logObject = logObjectTransform(logObject)
+            }
             activeLogger.debug(logObject)
         }
     },
     info: (logObject: ILogObject) => {
         if (logInfo && activeLogger != undefined) {
             ;(logObject as any).level = LogLevel.Info
+            if (logObjectTransform != undefined) {
+                logObject = logObjectTransform(logObject)
+            }
             activeLogger.info(logObject)
         }
     },
     warn: (logObject: ILogObject) => {
         if (logWarn && activeLogger != undefined) {
             ;(logObject as any).level = LogLevel.Warn
+            if (logObjectTransform != undefined) {
+                logObject = logObjectTransform(logObject)
+            }
             activeLogger.warn(logObject)
         }
     },
     error: (logObject: ILogObject) => {
         if (logError && activeLogger != undefined) {
             ;(logObject as any).level = LogLevel.Error
+            if (logObjectTransform != undefined) {
+                logObject = logObjectTransform(logObject)
+            }
             activeLogger.error(logObject)
         }
     }
@@ -158,4 +173,10 @@ let activeLogger: ILogger
 
 export function setLogger(newLogger: ILogger) {
     activeLogger = newLogger
+}
+
+let logObjectTransform: (logObject: ILogObject) => ILogObject
+
+export function setLogTransform(transform: (logObject: ILogObject) => ILogObject) {
+    logObjectTransform = transform
 }
