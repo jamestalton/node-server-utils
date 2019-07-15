@@ -1,5 +1,5 @@
 export { startCluster } from './clustered'
 export { createAppServer, shutdownAppServer } from './server'
-export { ILogger, ILogObject, logger, setLogger, setLogLevel, LogLevel } from './logger'
+export { ILogger, ILogObject, logger, setLogger, setLogLevel, LogLevel, setLogTransform } from './logger'
 export { consoleLogger } from './console-logger'
 export { CombineLogger } from './combine-logger'
