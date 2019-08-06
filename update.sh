@@ -24,7 +24,7 @@ if [ "$TRAVIS_EVENT_TYPE" = "cron" ]; then
     git config --global user.name "Travis CI"
     git commit -m "fix(deps): upgrade dependencies"
     git remote remove origin
-    git remote add origin https://next-update:$GH_TOKEN@github.com/jamestalton/koa-mongo-router.git
+    git remote add origin https://next-update:$GH_TOKEN@github.com/jamestalton/node-server-utils.git
     git push origin master
   else
     echo No upgrades available
