@@ -1,28 +1,14 @@
 language: node_js
-node_js: 
-    - "10"
-
-git:
-    depth: false
-    quiet: true
-    submodules: false
-
-if: tag IS blank
-
+node_js: "10"
+install: npm ci
 script:
-    - npm audit
-    - npm run lint
-    - npm run check-format
-    - npm run build
-    - ./update.sh
-
-jobs:
-    include:
-        - stage: release
-          deploy:
-              provider: script
-              skip_cleanup: true
-              script: npx semantic-release
-              on:
-                branch: master
-                condition: $TRAVIS_EVENT_TYPE != cron
+    - npm test
+    - npm build
+    - ./scripts/update.sh
+deploy:
+    - provider: script
+      skip_cleanup: true
+      script: ./scripts/publish.sh
+      on:
+          branch: master
+          condition: $TRAVIS_EVENT_TYPE != cron
