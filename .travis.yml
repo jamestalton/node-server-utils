@@ -9,7 +9,7 @@ jobs:
               - npm build
 
         - stage: Build, Test, and Publish
-          if: (NOT type = pull_request) AND (branch = master) AND ($TRAVIS_EVENT_TYPE != cron)
+          if: type != pull_request AND branch = master AND env(TRAVIS_EVENT_TYPE) != cron
           language: node_js
           node_js: '10'
           script:
@@ -18,7 +18,7 @@ jobs:
               - ./scripts/publish.sh
 
         - stage: Automated Dependency Upgrade
-          if: (NOT type = pull_request) AND (branch = master) AND ($TRAVIS_EVENT_TYPE = cron)
+          if: type != pull_request AND branch = master AND env(TRAVIS_EVENT_TYPE) = cron
           language: node_js
           node_js: '10'
           script:
