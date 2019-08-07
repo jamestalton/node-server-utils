@@ -1,14 +1,25 @@
-language: node_js
-node_js: "10"
-install: npm ci
-script:
-    - npm test
-    - npm build
-    - ./scripts/update.sh
-deploy:
-    - provider: script
-      skip_cleanup: true
-      script: ./scripts/publish.sh
-      on:
-          branch: master
-          condition: $TRAVIS_EVENT_TYPE != cron
+jobs:
+    include:
+        - stage: Pull Request Build and Test
+          if: type = pull_request
+          language: node_js
+          node_js: "10"
+          script:
+            - npm test
+            - npm build
+
+        - stage: Build, Test, and Publish
+          if: (NOT type = pull_request) AND (branch = master) AND ($TRAVIS_EVENT_TYPE != cron)
+          language: node_js
+          node_js: "10"
+          script:
+            - npm test
+            - npm build
+            - ./scripts/publish.sh
+            
+        - stage: Automated Dependency Upgrade
+          if: (NOT type = pull_request) AND (branch = master) AND ($TRAVIS_EVENT_TYPE = cron)
+          language: node_js
+          node_js: "10"
+          script:
+            - ./scripts/update.sh

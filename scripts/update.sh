@@ -17,7 +17,7 @@ if [ "$TRAVIS_EVENT_TYPE" = "cron" ]; then
 
   if ! git diff-files --quiet --ignore-submodules -- > /dev/null; then
     npm build
-    # npm test
+    npm test
     npm audit
     git config --global user.email "travis@travis-ci.org"
     git config --global user.name "Travis CI"
