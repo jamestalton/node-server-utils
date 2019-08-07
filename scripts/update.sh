@@ -8,6 +8,10 @@ if [ "$TRAVIS_EVENT_TYPE" = "cron" ]; then
     exit 1
   fi
 
+  git remote remove origin
+  git remote add origin https://${GH_TOKEN}@github.com/jamestalton/node-server-utils.git > /dev/null 2>&1
+  git checkout master
+
   rm -rf node_modules
   rm -f package-lock.json
 
@@ -23,9 +27,7 @@ if [ "$TRAVIS_EVENT_TYPE" = "cron" ]; then
     git config --global user.name "Travis CI"
     git add -u :/
     git commit -m "fix(deps): upgrade dependencies"
-    git remote remove origin
-    git remote add origin https://${GH_TOKEN}@github.com/jamestalton/node-server-utils.git > /dev/null 2>&1
-    git push --set-upstream origin master
+    git push origin master
   else
     echo No upgrades available
   fi

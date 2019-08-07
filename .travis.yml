@@ -1,17 +1,17 @@
+language: node_js
+node_js: '10'
+install: npm ci
+
 jobs:
     include:
         - stage: Pull Request Build and Test
           if: type = pull_request
-          language: node_js
-          node_js: '10'
           script:
               - npm test
               - npm run build
 
         - stage: Build, Test, and Publish
           if: type = push AND branch = master
-          language: node_js
-          node_js: '10'
           script:
               - npm test
               - npm run build
@@ -19,7 +19,5 @@ jobs:
 
         - stage: Automated Dependency Upgrade
           if: type = cron AND branch = master
-          language: node_js
-          node_js: '10'
           script:
               - ./scripts/update.sh
