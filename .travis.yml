@@ -6,7 +6,7 @@ jobs:
           node_js: '10'
           script:
               - npm test
-              - npm build
+              - npm run build
 
         - stage: Build, Test, and Publish
           if: type = push AND branch = master
@@ -14,7 +14,7 @@ jobs:
           node_js: '10'
           script:
               - npm test
-              - npm build
+              - npm run build
               - ./scripts/publish.sh
 
         - stage: Automated Dependency Upgrade
