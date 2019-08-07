@@ -1,5 +1,6 @@
 example
 src
+.DS_Store 
 .gitignore
 .npmignore
 .travis.yml
@@ -8,3 +9,4 @@ jest.config.js
 prettier.config.js
 tsconfig.json
 tslint.json
+scripts

@@ -1,6 +1,6 @@
 {
     "name": "node-server-utils",
-    "version": "0.0.0-development",
+    "version": "0.0.0",
     "description": "Node Server Utils",
     "author": "James Talton",
     "license": "ISC",
