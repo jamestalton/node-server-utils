@@ -3,23 +3,23 @@ jobs:
         - stage: Pull Request Build and Test
           if: type = pull_request
           language: node_js
-          node_js: "10"
+          node_js: '10'
           script:
-            - npm test
-            - npm build
+              - npm test
+              - npm build
 
         - stage: Build, Test, and Publish
           if: (NOT type = pull_request) AND (branch = master) AND ($TRAVIS_EVENT_TYPE != cron)
           language: node_js
-          node_js: "10"
+          node_js: '10'
           script:
-            - npm test
-            - npm build
-            - ./scripts/publish.sh
-            
+              - npm test
+              - npm build
+              - ./scripts/publish.sh
+
         - stage: Automated Dependency Upgrade
           if: (NOT type = pull_request) AND (branch = master) AND ($TRAVIS_EVENT_TYPE = cron)
           language: node_js
-          node_js: "10"
+          node_js: '10'
           script:
-            - ./scripts/update.sh
+              - ./scripts/update.sh
