@@ -20,7 +20,7 @@ npx npm-check-updates -u
 npm install
 npm audit fix
 
-if git diff --name-only | grep 'package.json\|package-log.json'; then
+if git diff --name-only | grep 'package.json\|package-lock.json'; then
   npm build
   npm test
   npm audit
