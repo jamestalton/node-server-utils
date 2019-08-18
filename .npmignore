@@ -6,7 +6,6 @@ src
 .travis.yml
 .npmrc
 jest.config.js
-prettier.config.js
 tsconfig.json
 tslint.json
 scripts

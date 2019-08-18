@@ -4,7 +4,11 @@ import { ILogger, logger, LogLevel, setLogger } from './logger'
 import { initializeProcess } from './process'
 import { workerLogger } from './worker-logger'
 
-export function startCluster(startApp: () => Promise<any>, shutdownApp: () => Promise<any>, useLogger?: ILogger) {
+export function startCluster(
+    startApp: () => Promise<void>,
+    shutdownApp: () => Promise<void>,
+    useLogger?: ILogger
+): Promise<void> {
     if (useLogger != undefined) {
         if (cluster.isMaster) {
             setLogger(useLogger)
@@ -20,7 +24,7 @@ export function startCluster(startApp: () => Promise<any>, shutdownApp: () => Pr
 
         let workerCount = os.cpus().length
         if (process.env.MAX_WORKERS != undefined) {
-            const clusterMaxWorkerCount: number = Number(process.env.MAX_WORKERS)
+            const clusterMaxWorkerCount = Number(process.env.MAX_WORKERS)
             if (!isNaN(clusterMaxWorkerCount)) {
                 workerCount = Math.min(clusterMaxWorkerCount, workerCount)
             }

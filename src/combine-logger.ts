@@ -8,31 +8,31 @@ export class CombineLogger implements ILogger {
         this.loggers.push(logger2)
     }
 
-    public silly(logObject: ILogObject) {
+    public silly(logObject: ILogObject): void {
         for (const logger of this.loggers) {
             logger.silly(logObject)
         }
     }
 
-    public debug(logObject: ILogObject) {
+    public debug(logObject: ILogObject): void {
         for (const logger of this.loggers) {
             logger.debug(logObject)
         }
     }
 
-    public info(logObject: ILogObject) {
+    public info(logObject: ILogObject): void {
         for (const logger of this.loggers) {
             logger.info(logObject)
         }
     }
 
-    public warn(logObject: ILogObject) {
+    public warn(logObject: ILogObject): void {
         for (const logger of this.loggers) {
             logger.warn(logObject)
         }
     }
 
-    public error(logObject: ILogObject) {
+    public error(logObject: ILogObject): void {
         for (const logger of this.loggers) {
             logger.error(logObject)
         }

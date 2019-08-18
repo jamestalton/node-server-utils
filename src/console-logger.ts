@@ -13,7 +13,7 @@ const FgWhite = '\x1b[37m'
 
 const color = process.env.LOG_COLOR !== 'false'
 
-function log(levelString: string, logObject: ILogObject) {
+function log(levelString: string, logObject: ILogObject): void {
     let msg = ''
     if (process.env.LOG_DATE !== 'false' && process.env.LOG_TIME !== 'false') {
         const date = new Date()
@@ -34,7 +34,7 @@ function log(levelString: string, logObject: ILogObject) {
         msg += ' '
     }
 
-    const { message, level, ...logObj } = logObject as any
+    const { message, level, ...logObj } = logObject
     msg += `${levelString}${Bright}${FgBlack}:${Reset}${FgWhite}${message}`
 
     let data = JSON.stringify(logObj)

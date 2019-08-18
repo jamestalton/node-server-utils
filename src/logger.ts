@@ -14,7 +14,7 @@ let logInfo = false
 let logWarn = false
 let logError = false
 
-export function setLogLevel(newLogLevel: LogLevel) {
+export function setLogLevel(newLogLevel: LogLevel): void {
     logLevel = newLogLevel
 
     switch (logLevel) {
@@ -110,7 +110,13 @@ setLogLevel(logLevel)
 
 export interface ILogObject {
     message: string
-    [key: string]: any
+    [key: string]: unknown
+}
+
+let logObjectTransform: (logObject: ILogObject) => ILogObject
+
+export function setLogTransform(transform: (logObject: ILogObject) => ILogObject): void {
+    logObjectTransform = transform
 }
 
 export interface ILogger {
@@ -121,10 +127,16 @@ export interface ILogger {
     error: (logObject: ILogObject) => void
 }
 
-export let logger: ILogger = {
+let activeLogger: ILogger
+
+export function setLogger(newLogger: ILogger): void {
+    activeLogger = newLogger
+}
+
+export const logger: ILogger = {
     silly: (logObject: ILogObject) => {
         if (logSilly && activeLogger != undefined) {
-            ;(logObject as any).level = LogLevel.Silly
+            logObject.level = LogLevel.Silly
             if (logObjectTransform != undefined) {
                 logObject = logObjectTransform(logObject)
             }
@@ -133,7 +145,7 @@ export let logger: ILogger = {
     },
     debug: (logObject: ILogObject) => {
         if (logDebug && activeLogger != undefined) {
-            ;(logObject as any).level = LogLevel.Debug
+            logObject.level = LogLevel.Debug
             if (logObjectTransform != undefined) {
                 logObject = logObjectTransform(logObject)
             }
@@ -142,7 +154,7 @@ export let logger: ILogger = {
     },
     info: (logObject: ILogObject) => {
         if (logInfo && activeLogger != undefined) {
-            ;(logObject as any).level = LogLevel.Info
+            logObject.level = LogLevel.Info
             if (logObjectTransform != undefined) {
                 logObject = logObjectTransform(logObject)
             }
@@ -151,7 +163,7 @@ export let logger: ILogger = {
     },
     warn: (logObject: ILogObject) => {
         if (logWarn && activeLogger != undefined) {
-            ;(logObject as any).level = LogLevel.Warn
+            logObject.level = LogLevel.Warn
             if (logObjectTransform != undefined) {
                 logObject = logObjectTransform(logObject)
             }
@@ -160,23 +172,11 @@ export let logger: ILogger = {
     },
     error: (logObject: ILogObject) => {
         if (logError && activeLogger != undefined) {
-            ;(logObject as any).level = LogLevel.Error
+            logObject.level = LogLevel.Error
             if (logObjectTransform != undefined) {
                 logObject = logObjectTransform(logObject)
             }
             activeLogger.error(logObject)
         }
     }
-}
-
-let activeLogger: ILogger
-
-export function setLogger(newLogger: ILogger) {
-    activeLogger = newLogger
-}
-
-let logObjectTransform: (logObject: ILogObject) => ILogObject
-
-export function setLogTransform(transform: (logObject: ILogObject) => ILogObject) {
-    logObjectTransform = transform
 }

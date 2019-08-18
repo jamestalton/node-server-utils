@@ -5,7 +5,7 @@
 import { worker } from 'cluster'
 import { ILogger, ILogObject } from './logger'
 
-export let workerLogger: ILogger = {
+export const workerLogger: ILogger = {
     silly: (logObject: ILogObject) => {
         if (worker.isConnected()) {
             process.send(logObject)

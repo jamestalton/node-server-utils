@@ -4,9 +4,9 @@ import { ILogger } from './logger'
 
 const processName = isMaster ? 'process' : 'worker process'
 
-export function initializeProcess(shutdownCallback: () => Promise<any>, logger: ILogger) {
+export function initializeProcess(shutdownCallback: () => Promise<void>, logger: ILogger): void {
     let exiting = false
-    const shutdown = async () => {
+    const shutdown = async (): Promise<void> => {
         if (exiting) {
             return
         }

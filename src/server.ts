@@ -3,10 +3,19 @@ import { Http2SecureServer, Http2ServerRequest, Http2ServerResponse } from 'http
 import { AddressInfo, Socket } from 'net'
 import { logger } from './logger'
 
+class MyServer extends Server {
+    allSocketsClosedCallback: (value?: unknown) => void
+    clientSockets: MySocket[]
+}
+
+class MySocket extends Socket {
+    activeRequestCount: number
+}
+
 export function createAppServer(
     requestHandler: (req: IncomingMessage | Http2ServerRequest, res: ServerResponse | Http2ServerResponse) => void
-) {
-    const clientSockets: Socket[] = []
+): Server {
+    const clientSockets: MySocket[] = []
 
     const server: Server | Http2SecureServer = createServer(requestHandler)
 
@@ -15,19 +24,20 @@ export function createAppServer(
             logger.debug({ message: 'server listening', port: (server.address() as AddressInfo).port })
         })
         .on('request', function(req, res) {
-            if (req.socket.activeRequestCount == undefined) {
-                req.socket.activeRequestCount = 1
+            const socket: MySocket = req.socket
+            if (socket.activeRequestCount == undefined) {
+                socket.activeRequestCount = 1
             } else {
-                req.socket.activeRequestCount++
+                socket.activeRequestCount++
             }
             res.on('finish', function() {
-                req.socket.activeRequestCount--
-                if ((server as any).allSocketsClosedCallback != undefined && req.socket.activeRequestCount === 0) {
-                    ;(req.socket as Socket).destroy()
+                socket.activeRequestCount--
+                if ((server as MyServer).allSocketsClosedCallback != undefined && socket.activeRequestCount === 0) {
+                    socket.destroy()
                 }
             })
         })
-        .on('connection', socket => {
+        .on('connection', (socket: MySocket) => {
             clientSockets.push(socket)
             logger.silly({ message: `client socket connect`, sockets: clientSockets.length })
             socket
@@ -41,8 +51,8 @@ export function createAppServer(
                 .on('close', function() {
                     clientSockets.splice(clientSockets.indexOf(socket), 1)
                     logger.silly({ message: `client socket closed`, sockets: clientSockets.length })
-                    if ((server as any).allSocketsClosedCallback != undefined && clientSockets.length === 0) {
-                        ;(server as any).allSocketsClosedCallback()
+                    if ((server as MyServer).allSocketsClosedCallback != undefined && clientSockets.length === 0) {
+                        ;(server as MyServer).allSocketsClosedCallback()
                     }
                 })
         })
@@ -52,29 +62,33 @@ export function createAppServer(
         .on('close', () => {
             logger.debug({ message: 'server closed' })
         })
-    ;(server as any).clientSockets = clientSockets
+    ;(server as MyServer).clientSockets = clientSockets
 
     return server.listen(process.env.PORT)
 }
 
-export async function shutdownAppServer(server: Server | Http2SecureServer) {
+export async function shutdownAppServer(server: Server | Http2SecureServer): Promise<void> {
     if (server == undefined) {
         return
     }
 
-    logger.silly({ message: 'closing client sockets', sockets: (server as any).clientSockets.length })
-    await new Promise(async resolve => {
-        ;(server as any).allSocketsClosedCallback = resolve
-        ;(server as any).clientSockets.forEach((clientSocket: Socket) => {
-            if ((clientSocket as any).activeRequestCount === 0) {
-                clientSocket.destroy()
+    logger.silly({ message: 'closing client sockets', sockets: (server as MyServer).clientSockets.length })
+    await new Promise(
+        async (resolve): Promise<void> => {
+            ;(server as MyServer).allSocketsClosedCallback = resolve
+            ;(server as MyServer).clientSockets.forEach((clientSocket: MySocket) => {
+                if (clientSocket.activeRequestCount === 0) {
+                    clientSocket.destroy()
+                }
+            })
+
+            await new Promise((resolveClose): void => {
+                server.close(resolveClose)
+            })
+
+            if ((server as MyServer).clientSockets.length === 0) {
+                resolve()
             }
-        })
-
-        await new Promise(resolveClose => server.close(resolveClose))
-
-        if ((server as any).clientSockets.length === 0) {
-            resolve()
         }
-    })
+    )
 }

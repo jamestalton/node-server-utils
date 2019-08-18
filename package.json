@@ -14,8 +14,8 @@
         "build": "rm -rf lib && tsc",
         "start": "LOG_LEVEL=SILLY PORT=3000 MAX_WORKERS=2 ts-node example/main.ts",
         "test": "npm run lint && npm run check-format",
-        "lint": "tslint -p .",
-        "lint-fix": "tslint -p . --fix",
+        "lint": "eslint src --ext .ts --max-warnings=0",
+        "lint-fix": "eslint src --ext .ts --fix",
         "check-format": "prettier --list-different **/*.ts **/*.json **/*.md !coverage/** !lib/** !**/package-lock.json",
         "format": "prettier --write **/*.ts **/*.json **/*.md !coverage/** !lib/** !**/package-lock.json",
         "clean": "rm -rf package-lock.json node_modules lib coverage",
@@ -23,10 +23,37 @@
     },
     "devDependencies": {
         "@types/node": "^12.x.x",
+        "@typescript-eslint/eslint-plugin": "^2.0.0",
+        "@typescript-eslint/parser": "^2.0.0",
+        "eslint": "^6.1.0",
+        "eslint-config-prettier": "^6.0.0",
+        "eslint-plugin-prettier": "^3.1.0",
         "prettier": "^1.18.2",
         "ts-node": "^8.3.0",
         "tslint": "^5.18.0",
         "tslint-config-prettier": "^1.18.0",
         "typescript": "^3.5.3"
+    },
+    "prettier": {
+        "printWidth": 120,
+        "tabWidth": 4,
+        "semi": false,
+        "singleQuote": true
+    },
+    "eslintConfig": {
+        "parser": "@typescript-eslint/parser",
+        "extends": [
+            "plugin:@typescript-eslint/recommended",
+            "prettier/@typescript-eslint",
+            "plugin:prettier/recommended"
+        ],
+        "parserOptions": {
+            "ecmaVersion": 2018,
+            "sourceType": "module"
+        },
+        "rules": {
+            "@typescript-eslint/no-unused-vars": "off",
+            "@typescript-eslint/interface-name-prefix": "off"
+        }
     }
 }
