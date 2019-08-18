@@ -38,6 +38,7 @@ export function createAppServer(
             })
         })
         .on('connection', (socket: MySocket) => {
+            socket.activeRequestCount = 0
             clientSockets.push(socket)
             logger.silly({ message: `client socket connect`, sockets: clientSockets.length })
             socket

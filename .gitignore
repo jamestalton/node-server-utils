@@ -5,3 +5,4 @@ coverage/
 data/
 dist/
 public/
+.npmrc
