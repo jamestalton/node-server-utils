@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import * as cluster from 'cluster'
 import * as os from 'os'
 import { ILogger, logger, LogLevel, setLogger } from './logger'
@@ -5,8 +7,8 @@ import { initializeProcess } from './process'
 import { workerLogger } from './worker-logger'
 
 export function startCluster(
-    startApp: () => Promise<void>,
-    shutdownApp: () => Promise<void>,
+    startApp: () => Promise<any>,
+    shutdownApp: () => Promise<any>,
     useLogger?: ILogger
 ): Promise<void> {
     if (useLogger != undefined) {
