@@ -2,7 +2,7 @@ import { isMaster, worker } from 'cluster'
 import { cpus, totalmem } from 'os'
 import { ILogger } from './logger'
 
-const processName = isMaster ? 'process' : 'worker process'
+const processName = isMaster ? 'process' : 'worker thread'
 
 export function initializeProcess(shutdownCallback: () => Promise<void>, logger: ILogger): void {
     let exiting = false
@@ -91,7 +91,7 @@ export function initializeProcess(shutdownCallback: () => Promise<void>, logger:
 
     if (worker != undefined) {
         worker.on('disconnect', async () => {
-            logger.silly({ message: 'cluster worker disconnect', version: process.env.VERSION })
+            logger.silly({ message: 'worker thread disconnect', version: process.env.VERSION })
             await shutdown()
         })
     }

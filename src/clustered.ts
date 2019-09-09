@@ -34,9 +34,9 @@ export function startCluster(
 
         cluster.on('exit', (deadWorker, code, signal) => {
             if (!deadWorker.exitedAfterDisconnect) {
-                logger.error({ message: `cluster worker crash`, code })
+                logger.error({ message: `worker thread crash`, code })
             } else {
-                logger.silly({ message: `cluster worker exit`, code })
+                logger.silly({ message: `worker thread exit`, code })
             }
             if (Object.keys(cluster.workers).length === 0) {
                 cluster.disconnect()
