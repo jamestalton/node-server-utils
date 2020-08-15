@@ -30,5 +30,5 @@ export const workerLogger: ILogger = {
         if (worker.isConnected()) {
             process.send(logObject)
         }
-    }
+    },
 }

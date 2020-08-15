@@ -71,5 +71,5 @@ export const consoleLogger: ILogger = {
     error(logObject: ILogObject) {
         const levelString = color ? `${FgRed}ERROR` : `ERROR`
         log(levelString, logObject)
-    }
+    },
 }

@@ -23,14 +23,14 @@ export function createAppServer(
         .on('listening', function serverListening() {
             logger.debug({ message: 'server listening', port: (server.address() as AddressInfo).port })
         })
-        .on('request', function(req, res) {
+        .on('request', function (req, res) {
             const socket: MySocket = req.socket
             if (socket.activeRequestCount == undefined) {
                 socket.activeRequestCount = 1
             } else {
                 socket.activeRequestCount++
             }
-            res.on('finish', function() {
+            res.on('finish', function () {
                 socket.activeRequestCount--
                 if ((server as MyServer).allSocketsClosedCallback != undefined && socket.activeRequestCount === 0) {
                     socket.destroy()
@@ -42,14 +42,14 @@ export function createAppServer(
             clientSockets.push(socket)
             logger.silly({ message: `client socket connect`, sockets: clientSockets.length })
             socket
-                .on('error', function(err: Error) {
+                .on('error', function (err: Error) {
                     logger.error({
                         message: `client socket error`,
                         errorName: err.name,
-                        error: err.message
+                        error: err.message,
                     })
                 })
-                .on('close', function() {
+                .on('close', function () {
                     clientSockets.splice(clientSockets.indexOf(socket), 1)
                     logger.silly({ message: `client socket closed`, sockets: clientSockets.length })
                     if ((server as MyServer).allSocketsClosedCallback != undefined && clientSockets.length === 0) {

@@ -28,24 +28,24 @@ export function initializeProcess(shutdownCallback: () => Promise<void>, logger:
             cpus: Object.keys(cpus()).length,
             mem: (totalmem() / (1024 * 1024 * 1024)).toPrecision(2).toString() + 'GB',
             node: process.versions.node,
-            version: process.env.VERSION
+            version: process.env.VERSION,
         })
     } else {
         logInfo({ message: `${processName} start`, version: process.env.VERSION })
     }
 
-    process.on('uncaughtException', err => {
+    process.on('uncaughtException', (err) => {
         logger.error({
             message: `${processName} uncaughtException`,
             errorName: err.name,
             error: err.message,
             stack: err.stack,
-            version: process.env.VERSION
+            version: process.env.VERSION,
         })
         void shutdown()
     })
 
-    process.on('exit', code => {
+    process.on('exit', (code) => {
         if (code !== 0) {
             logger.error({ message: `${processName} exit`, code, version: process.env.VERSION })
         } else {

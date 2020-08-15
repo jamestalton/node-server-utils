@@ -45,7 +45,7 @@ export function startCluster(
 
         for (let i = 0; i < workerCount; i += 1) {
             const worker = cluster.fork()
-            worker.on('message', message => {
+            worker.on('message', (message) => {
                 switch (message.level as LogLevel) {
                     case LogLevel.Silly:
                         logger.silly(message)

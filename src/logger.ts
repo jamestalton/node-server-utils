@@ -4,7 +4,7 @@ export enum LogLevel {
     Warn = 'warn',
     Info = 'info',
     Debug = 'debug',
-    Silly = 'silly'
+    Silly = 'silly',
 }
 
 let logLevel: LogLevel = LogLevel.Info
@@ -178,5 +178,5 @@ export const logger: ILogger = {
             }
             activeLogger.error(logObject)
         }
-    }
+    },
 }
